@@ -1,0 +1,36 @@
+version: '3.8'
+
+services:
+  main_datastore:
+    container_name: main_datastore
+    image: postgres:latest
+    ports:
+      - '5432:5432'
+    volumes:
+      - pgdata:/data/postgres
+    env_file:
+      - development.env
+    networks:
+      - appnetwork
+
+  pgadmin:
+    depends_on:
+      - main_datastore
+    container_name: pgadmin
+    image: dpage/pgadmin4
+    ports:
+      - '8080:80'
+    volumes:
+      - pgdata:/root/.pgadmin
+    env_file:
+      - development.env
+    networks:
+      - appnetwork
+
+networks:
+  appnetwork:
+    driver: bridge
+
+volumes:
+  pgdata:
+    driver: local
