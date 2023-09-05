@@ -1,6 +1,14 @@
-import { Column, PrimaryGeneratedColumn } from 'typeorm';
+import {
+  Column,
+  CreateDateColumn,
+  Entity,
+  PrimaryGeneratedColumn,
+  UpdateDateColumn,
+} from 'typeorm';
+import { Exclude } from 'class-transformer';
 import Role from './role.enum';
 
+@Entity()
 class User {
   @PrimaryGeneratedColumn('uuid')
   public id: string;
@@ -18,8 +26,9 @@ class User {
   public username: string;
 
   @Column({
-    length: 50,
+    length: 100,
   })
+  @Exclude()
   public password: string;
 
   @Column({
@@ -29,6 +38,16 @@ class User {
     default: [Role.User],
   })
   public roles: Role[];
+
+  @CreateDateColumn({
+    type: 'timestamptz',
+  })
+  public createdAt: Date;
+
+  @UpdateDateColumn({
+    type: 'timestamptz',
+  })
+  public updatedAt: Date;
 }
 
 export default User;

@@ -7,7 +7,7 @@ services:
     ports:
       - '5432:5432'
     volumes:
-      - pgdata:/data/postgres
+      - main_db:/data/postgres
     env_file:
       - development.env
     networks:
@@ -21,16 +21,37 @@ services:
     ports:
       - '8080:80'
     volumes:
-      - pgdata:/root/.pgadmin
+      - pgadmin_vol:/root/.pgadmin
     env_file:
       - development.env
     networks:
       - appnetwork
+
+  redis_cache:
+    depends_on:
+      - main_datastore
+    container_name: redis_cache
+    image: redis:7.2-alpine
+    restart: always
+    ports:
+      - '6379:6379'
+    env_file:
+      - development.env
+    volumes:
+      - redis:/data
+    command:
+      - /bin/sh
+      - -c
+      - redis-server --save 20 1 --loglevel warning --requirepass "$${REDIS_PASSWORD:?REDIS_PASSWORD variable is not set}"
 
 networks:
   appnetwork:
     driver: bridge
 
 volumes:
-  pgdata:
+  main_db:
+    driver: local
+  pgadmin_vol:
+    driver: local
+  redis:
     driver: local
