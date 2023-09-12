@@ -22,6 +22,8 @@ import { join } from 'path';
         POSTGRES_USER: Joi.string().required(),
         POSTGRES_PASSWORD: Joi.string().required(),
         POSTGRES_DB: Joi.string().required(),
+        REDIS_HOST: Joi.string().required(),
+        REDIS_PORT: Joi.number().required(),
         APP_PORT: Joi.number().required(),
         SESSION_SECRET: Joi.string().required(),
       }),

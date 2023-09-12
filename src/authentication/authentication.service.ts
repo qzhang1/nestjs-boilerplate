@@ -16,14 +16,11 @@ export class AuthenticationService {
   ) {}
 
   public async register(registerData: CreateUserDto) {
-    const validationResult = this.passwordComplexity.validate(
+    const validationError = this.passwordComplexity.validate(
       registerData.password,
     );
-    if (validationResult.error) {
-      throw new HttpException(
-        validationResult.error.message,
-        HttpStatus.BAD_REQUEST,
-      );
+    if (validationError) {
+      throw new HttpException(validationError, HttpStatus.BAD_REQUEST);
     }
     const hashedPwd = await bcrypt.hash(registerData.password, 10);
     registerData.password = hashedPwd;

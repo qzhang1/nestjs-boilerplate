@@ -64,17 +64,31 @@ export class PasswordComplexityService {
     }
   }
 
-  public validate(password: string): Joi.ValidationResult<string> {
+  public validate(password: string): string {
     let validator = Joi.string();
+    let result;
     if (this.complexityOption.min) {
       validator = validator.min(this.complexityOption.min);
+      result = validator.validate(password);
+      if (result.error) {
+        return result.error.message;
+      }
     }
     if (this.complexityOption.max) {
       validator = validator.max(this.complexityOption.max);
+      result = validator.validate(password);
+      if (result.error) {
+        return result.error.message;
+      }
     }
     let patterns;
     if (this.complexityOption.lowerCase) {
       patterns = '(?=.*[a-z])';
+      validator = validator.regex(new RegExp(patterns));
+      result = validator.validate(password);
+      if (result.error) {
+        return result.error.message;
+      }
     }
     if (this.complexityOption.upperCase) {
       if (patterns) {
@@ -82,17 +96,29 @@ export class PasswordComplexityService {
       } else {
         patterns = '(?=.*[A-Z])';
       }
+
+      validator = validator.regex(new RegExp(patterns));
+      result = validator.validate(password);
+      if (result.error) {
+        return result.error.message;
+      }
     }
     if (this.complexityOption.numeric) {
       patterns += '(?=.*[0-9])';
+      validator = validator.regex(new RegExp(patterns));
+      result = validator.validate(password);
+      if (result.error) {
+        return result.error.message;
+      }
     }
     if (this.complexityOption.symbols) {
       // " !"#$%&'()*+,-./:;<=>?@[\]^_`{|}~"
       patterns += '(?=.*[s!"#$%&()*+,])';
-    }
-    if (patterns) {
       validator = validator.regex(new RegExp(patterns));
+      result = validator.validate(password);
+      if (result.error) {
+        return result.error.message;
+      }
     }
-    return validator.validate(password);
   }
 }
