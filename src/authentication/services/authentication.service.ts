@@ -1,8 +1,11 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
-import CreateUserDto from 'src/users/dto/createUser.dto';
+import CreateUserDto from 'src/authentication/dtos/createUser.dto';
 import { UsersService } from 'src/users/users.service';
+import { google, Auth } from 'googleapis';
 import * as bcrypt from 'bcrypt';
 import { PasswordComplexityService } from './password-complexity.service';
+import { ConfigService } from '@nestjs/config';
+import CreateOAuthUserDto from '../dtos/createOAuthUser.dto';
 
 enum PostgresErrorCode {
   UniqueViolation = '23505',
@@ -14,6 +17,24 @@ export class AuthenticationService {
     private readonly passwordComplexity: PasswordComplexityService,
     private readonly userService: UsersService,
   ) {}
+
+  public async createOAuthUser(createUser: CreateOAuthUserDto) {
+    try {
+      const createdUser = await this.userService.create(createUser);
+      return createdUser;
+    } catch (error) {
+      if (error?.code === PostgresErrorCode.UniqueViolation) {
+        throw new HttpException(
+          'User with that email already exists',
+          HttpStatus.BAD_REQUEST,
+        );
+      }
+      throw new HttpException(
+        'unexpected error registering user',
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
+    }
+  }
 
   public async register(registerData: CreateUserDto) {
     const validationError = this.passwordComplexity.validate(

@@ -7,9 +7,12 @@ import {
 } from 'typeorm';
 import { Exclude } from 'class-transformer';
 import Role from './role.enum';
+import OAuthProvider from './oauthProvider.enum';
+import { IsOptional } from 'class-validator';
 
 @Entity()
 class User {
+  @Exclude()
   @PrimaryGeneratedColumn('uuid')
   public id: string;
 
@@ -27,6 +30,7 @@ class User {
 
   @Column({
     length: 100,
+    nullable: true,
   })
   @Exclude()
   public password: string;
@@ -38,6 +42,19 @@ class User {
     default: [Role.User],
   })
   public roles: Role[];
+
+  @Exclude()
+  @Column({
+    type: 'enum',
+    enum: OAuthProvider,
+    default: OAuthProvider.None,
+  })
+  public oauthProvider: string;
+
+  @Exclude()
+  @Column()
+  @IsOptional()
+  public oauthProfileId: string;
 
   @CreateDateColumn({
     type: 'timestamptz',

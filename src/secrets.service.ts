@@ -7,7 +7,7 @@ export class SecretsService {
   secrets: string[];
   private readonly logger = new Logger(SecretsService.name);
   constructor(private readonly configService: ConfigService) {
-    this.secrets = configService.get('SESSION_SECRET').split(',');
+    this.secrets = configService.get('SESSION_SECRETS').split(',');
     this.logger.log(`loaded ${this.secrets.length} secrets to be used`);
   }
 

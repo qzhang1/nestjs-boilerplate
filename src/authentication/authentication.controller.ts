@@ -12,18 +12,19 @@ import {
   UseInterceptors,
 } from '@nestjs/common';
 import { Response } from 'express';
-import { AuthenticationService } from './authentication.service';
-import CreateUserDto from 'src/users/dto/createUser.dto';
+import { AuthenticationService } from './services/authentication.service';
+import CreateUserDto from 'src/authentication/dtos/createUser.dto';
 import RequestWithUser from 'src/users/types/requestWithuser.interface';
 import { LogInWithCredentialsGuard } from './guards/loginWithCredentials.guard';
 import { CookieAuthenticationGuard } from './guards/cookieAuthentication.guard';
+import { GoogleOAuthGuard } from './guards/googleOAuth.guard';
 
 @Controller('auth')
 @UseInterceptors(ClassSerializerInterceptor) // makes sure any serialzation options like @Exclude is enforced
 export class AuthenticationController {
   constructor(private readonly authenticationService: AuthenticationService) {}
 
-  @HttpCode(201)
+  @HttpCode(HttpStatus.CREATED)
   @Post('register')
   async register(
     @Body() registrationData: CreateUserDto,
@@ -39,10 +40,21 @@ export class AuthenticationController {
     res.status(HttpStatus.OK).send();
   }
 
-  @HttpCode(200)
+  @Get('google')
+  @UseGuards(GoogleOAuthGuard)
+  async googleLogin() {}
+
+  @Get('google/cb')
+  @HttpCode(HttpStatus.OK)
+  @UseGuards(GoogleOAuthGuard)
+  async googleAuthCallback(@Req() req) {
+    return req.user;
+  }
+
+  @HttpCode(HttpStatus.OK)
   @UseGuards(CookieAuthenticationGuard)
   @Get('me')
-  async me(@Req() request) {
-    return request.user;
+  async me(@Req() req) {
+    return req.user;
   }
 }

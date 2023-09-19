@@ -1,25 +1,31 @@
-import { NestFactory } from '@nestjs/core';
+import { NestFactory, Reflector } from '@nestjs/core';
 import { ConfigService } from '@nestjs/config';
-import { ValidationPipe } from '@nestjs/common';
-
+import { ClassSerializerInterceptor, ValidationPipe } from '@nestjs/common';
 import * as session from 'express-session';
 import * as connectRedis from 'connect-redis';
+import * as passport from 'passport';
 import Redis from 'ioredis';
-
+// internal project deps
 import { AppModule } from './app.module';
 import { SecretsService } from './secrets.service';
-import * as passport from 'passport';
 
 async function bootstrap() {
   // loads all dependencies (modules, providers, dep graph)
   const app = await NestFactory.create(AppModule);
   app.setGlobalPrefix('api');
-  // transform payload body to desired DTO
+  // validates the request body according to DTO metadata
   app.useGlobalPipes(
     new ValidationPipe({
       transform: true,
     }),
   );
+  // serializes the DTOs and will expose/exclude certain properties
+  // according to class-transformer metadata
+  // app.useGlobalInterceptors(
+  //   new ClassSerializerInterceptor(
+  //     app.get(Reflector)
+  //   )
+  // );
 
   const secretsService = app.get(SecretsService);
   const configService = app.get(ConfigService);

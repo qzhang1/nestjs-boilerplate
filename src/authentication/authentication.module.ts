@@ -1,12 +1,13 @@
 import { Module } from '@nestjs/common';
 import { PassportModule } from '@nestjs/passport/dist';
-import { AuthenticationService } from './authentication.service';
+import { AuthenticationService } from './services/authentication.service';
 import { AuthenticationController } from './authentication.controller';
 import { UsersModule } from 'src/users/users.module';
 import { ConfigModule } from '@nestjs/config';
-import { LocalStrategy } from './local.strategy';
-import { PasswordComplexityService } from './password-complexity.service';
-import { LocalSerializer } from './local.serializer';
+import { LocalStrategy } from './strategies/local.strategy';
+import { PasswordComplexityService } from './services/password-complexity.service';
+import { LocalSerializer } from './strategies/local.serializer';
+import { GoogleStrategy } from './strategies/google.strategy';
 
 @Module({
   imports: [UsersModule, ConfigModule, PassportModule],
@@ -16,6 +17,7 @@ import { LocalSerializer } from './local.serializer';
     PasswordComplexityService,
     LocalStrategy,
     LocalSerializer,
+    GoogleStrategy,
   ],
   controllers: [AuthenticationController],
 })
