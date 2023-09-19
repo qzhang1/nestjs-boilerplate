@@ -8,9 +8,17 @@ import { LocalStrategy } from './strategies/local.strategy';
 import { PasswordComplexityService } from './services/password-complexity.service';
 import { LocalSerializer } from './strategies/local.serializer';
 import { GoogleStrategy } from './strategies/google.strategy';
+import { UsersService } from 'src/users/users.service';
+import { TypeOrmModule } from '@nestjs/typeorm';
+import User from 'src/users/user.entity';
 
 @Module({
-  imports: [UsersModule, ConfigModule, PassportModule],
+  imports: [
+    UsersModule,
+    ConfigModule,
+    PassportModule,
+    TypeOrmModule.forFeature([User]),
+  ],
   providers: [
     AuthenticationService,
     LocalStrategy,
@@ -18,6 +26,7 @@ import { GoogleStrategy } from './strategies/google.strategy';
     LocalStrategy,
     LocalSerializer,
     GoogleStrategy,
+    UsersService,
   ],
   controllers: [AuthenticationController],
 })

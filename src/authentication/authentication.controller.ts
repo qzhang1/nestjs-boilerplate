@@ -34,10 +34,11 @@ export class AuthenticationController {
     res.status(HttpStatus.CREATED).send();
   }
 
+  @HttpCode(HttpStatus.OK)
   @UseGuards(LogInWithCredentialsGuard)
   @Post('login')
-  async login(@Req() request: RequestWithUser, @Res() res: Response) {
-    res.status(HttpStatus.OK).send();
+  async login(@Req() req: RequestWithUser, @Res() res: Response) {
+    res.sendStatus(HttpStatus.OK).json(req.user);
   }
 
   @Get('google')
@@ -47,8 +48,11 @@ export class AuthenticationController {
   @Get('google/cb')
   @HttpCode(HttpStatus.OK)
   @UseGuards(GoogleOAuthGuard)
-  async googleAuthCallback(@Req() req) {
-    return req.user;
+  async googleAuthCallback(@Req() req, @Res() res: Response) {
+    req.session.passport = {
+      user: req.user.id,
+    };
+    res.sendStatus(200);
   }
 
   @HttpCode(HttpStatus.OK)

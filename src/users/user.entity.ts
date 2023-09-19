@@ -52,7 +52,9 @@ class User {
   public oauthProvider: string;
 
   @Exclude()
-  @Column()
+  @Column({
+    nullable: true,
+  })
   @IsOptional()
   public oauthProfileId: string;
 
