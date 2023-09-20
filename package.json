@@ -28,6 +28,7 @@
     "@nestjs/passport": "^10.0.1",
     "@nestjs/platform-express": "^10.2.4",
     "@nestjs/schedule": "^3.0.3",
+    "@nestjs/terminus": "^10.1.1",
     "@nestjs/typeorm": "^10.0.0",
     "@types/bcrypt": "^5.0.0",
     "@types/connect-redis": "^0.0.21",

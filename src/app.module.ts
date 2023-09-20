@@ -8,6 +8,7 @@ import { AuthenticationModule } from './authentication/authentication.module';
 import * as Joi from 'joi';
 import { SecretsService } from './secrets.service';
 import { join } from 'path';
+import { HealthModule } from './health/health.module';
 
 @Module({
   imports: [
@@ -29,12 +30,16 @@ import { join } from 'path';
         GOOGLE_AUTH_CLIENT_SECRET: Joi.string().required(),
         GOOGLE_AUTH_CALLBACK_URL: Joi.string().required(),
         APP_PORT: Joi.number().required(),
+        APP_MAX_HEAP_LIMIT: Joi.number().default(314572800),
+        APP_MAX_RSS_LIMIT: Joi.number().default(314572800),
+        APP_DISK_STORAGE_PCT: Joi.number().min(0).max(1).default(0.4),
         SESSION_SECRETS: Joi.string().required(),
       }),
     }),
     DatabaseModule,
     UsersModule,
     AuthenticationModule,
+    HealthModule,
   ],
   controllers: [AppController],
   providers: [AppService, SecretsService],
