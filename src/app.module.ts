@@ -9,6 +9,7 @@ import * as Joi from 'joi';
 import { SecretsService } from './secrets.service';
 import { join } from 'path';
 import { HealthModule } from './health/health.module';
+import { PostsModule } from './posts/posts.module';
 
 @Module({
   imports: [
@@ -33,6 +34,7 @@ import { HealthModule } from './health/health.module';
         APP_MAX_HEAP_LIMIT: Joi.number().default(314572800),
         APP_MAX_RSS_LIMIT: Joi.number().default(314572800),
         APP_DISK_STORAGE_PCT: Joi.number().min(0).max(1).default(0.4),
+        FRONT_END_URL: Joi.string(),
         SESSION_SECRETS: Joi.string().required(),
       }),
     }),
@@ -40,6 +42,7 @@ import { HealthModule } from './health/health.module';
     UsersModule,
     AuthenticationModule,
     HealthModule,
+    PostsModule,
   ],
   controllers: [AppController],
   providers: [AppService, SecretsService],

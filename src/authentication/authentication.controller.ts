@@ -34,11 +34,10 @@ export class AuthenticationController {
     res.status(HttpStatus.CREATED).send();
   }
 
-  @HttpCode(HttpStatus.OK)
   @UseGuards(LogInWithCredentialsGuard)
   @Post('login')
   async login(@Req() req: RequestWithUser, @Res() res: Response) {
-    res.sendStatus(HttpStatus.OK).json(req.user);
+    res.sendStatus(HttpStatus.OK);
   }
 
   @Get('google')

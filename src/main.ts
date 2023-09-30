@@ -12,6 +12,7 @@ import { SecretsService } from './secrets.service';
 async function bootstrap() {
   // loads all dependencies (modules, providers, dep graph)
   const app = await NestFactory.create(AppModule);
+  const configService = app.get(ConfigService);
   app.setGlobalPrefix('api');
   // validates the request body according to DTO metadata
   app.useGlobalPipes(
@@ -26,9 +27,15 @@ async function bootstrap() {
   //     app.get(Reflector)
   //   )
   // );
+  if (configService.get('FRONT_END_URL')) {
+    console.log(configService.get('FRONT_END_URL'));
+    app.enableCors({
+      origin: configService.get('FRONT_END_URL'),
+      credentials: false,
+    });
+  }
 
   const secretsService = app.get(SecretsService);
-  const configService = app.get(ConfigService);
   // create redis client and use it as cookie store
   const redisClient = new Redis({
     port: parseInt(configService.get('REDIS_PORT')),
