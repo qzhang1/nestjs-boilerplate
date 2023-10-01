@@ -1,6 +1,6 @@
 import { NestFactory, Reflector } from '@nestjs/core';
 import { ConfigService } from '@nestjs/config';
-import { ClassSerializerInterceptor, ValidationPipe } from '@nestjs/common';
+import { ValidationPipe, VersioningType } from '@nestjs/common';
 import * as session from 'express-session';
 import * as connectRedis from 'connect-redis';
 import * as passport from 'passport';
@@ -14,24 +14,20 @@ async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   const configService = app.get(ConfigService);
   app.setGlobalPrefix('api');
+  app.enableVersioning({
+    type: VersioningType.URI,
+    defaultVersion: '1,',
+  });
   // validates the request body according to DTO metadata
   app.useGlobalPipes(
     new ValidationPipe({
       transform: true,
     }),
   );
-  // serializes the DTOs and will expose/exclude certain properties
-  // according to class-transformer metadata
-  // app.useGlobalInterceptors(
-  //   new ClassSerializerInterceptor(
-  //     app.get(Reflector)
-  //   )
-  // );
   if (configService.get('FRONT_END_URL')) {
-    console.log(configService.get('FRONT_END_URL'));
     app.enableCors({
       origin: configService.get('FRONT_END_URL'),
-      credentials: false,
+      credentials: true,
     });
   }
 

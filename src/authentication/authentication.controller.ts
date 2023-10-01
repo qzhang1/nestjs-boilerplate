@@ -19,7 +19,10 @@ import { LogInWithCredentialsGuard } from './guards/loginWithCredentials.guard';
 import { CookieAuthenticationGuard } from './guards/cookieAuthentication.guard';
 import { GoogleOAuthGuard } from './guards/googleOAuth.guard';
 
-@Controller('auth')
+@Controller({
+  version: '1',
+  path: 'auth',
+})
 @UseInterceptors(ClassSerializerInterceptor) // makes sure any serialzation options like @Exclude is enforced
 export class AuthenticationController {
   constructor(private readonly authenticationService: AuthenticationService) {}

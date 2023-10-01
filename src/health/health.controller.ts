@@ -8,7 +8,10 @@ import {
   DiskHealthIndicator,
 } from '@nestjs/terminus';
 
-@Controller('health')
+@Controller({
+  version: '1',
+  path: 'health',
+})
 export class HealthController {
   constructor(
     private readonly configService: ConfigService,
@@ -33,13 +36,13 @@ export class HealthController {
           'memory RSS',
           this.configService.get<number>('APP_MAX_RSS_LIMIT'),
         ),
-      () =>
-        this.diskHealthIndicator.checkStorage('disk health', {
-          thresholdPercent: this.configService.get<number>(
-            'APP_DISK_STORAGE_PCT',
-          ),
-          path: process.platform === 'win32' ? 'C:\\' : '/',
-        }),
+      // () =>
+      //   this.diskHealthIndicator.checkStorage('disk health', {
+      //     thresholdPercent: this.configService.get<number>(
+      //       'APP_DISK_STORAGE_PCT',
+      //     ),
+      //     path: process.platform === 'win32' ? 'C:\\' : '/',
+      //   }),
     ]);
   }
 }

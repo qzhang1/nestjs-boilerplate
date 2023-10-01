@@ -3,7 +3,10 @@ import { PostsService } from './posts.service';
 import { CookieAuthenticationGuard } from 'src/authentication/guards/cookieAuthentication.guard';
 
 @UseGuards(CookieAuthenticationGuard)
-@Controller('posts')
+@Controller({
+  version: '1',
+  path: 'posts',
+})
 export class PostsController {
   constructor(private readonly postsService: PostsService) {}
 
