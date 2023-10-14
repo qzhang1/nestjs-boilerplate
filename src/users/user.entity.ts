@@ -58,6 +58,9 @@ class User {
   @IsOptional()
   public oauthProfileId: string;
 
+  @Column({ default: false })
+  public isEmailConfirmed: boolean;
+
   @CreateDateColumn({
     type: 'timestamptz',
   })
